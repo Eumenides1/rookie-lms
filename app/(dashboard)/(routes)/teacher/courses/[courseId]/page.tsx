@@ -4,6 +4,7 @@ import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 import { IconBadge } from "@/components/icon-badge";
 import { LayoutDashboard } from "lucide-react";
+import { TitleForm } from "./_components/title-form";
 
 async function CourseIdPage({ params }: { params: { courseId: string } }) {
     const { courseId } = await params;
@@ -54,6 +55,10 @@ async function CourseIdPage({ params }: { params: { courseId: string } }) {
                             自定义课程信息
                         </h2>
                     </div>
+                    <TitleForm 
+                        initialData={course}
+                        courseId={course.id}
+                    />
                 </div>
             </div>
         </div>
