@@ -10,6 +10,7 @@ import { ImageForm } from "./_components/image-form";
 import { CategoryForm } from "./_components/category-form";
 import { PriceForm } from "./_components/price-form";
 import { AttachmentForm } from "./_components/attachment-form";
+import { ChapterForm } from "./_components/chapters-form";
 
 async function CourseIdPage({ params }: { params: { courseId: string } }) {
     const { courseId } = await params;
@@ -19,9 +20,15 @@ async function CourseIdPage({ params }: { params: { courseId: string } }) {
     }
     const course = await db.course.findUnique({
         where: {
-            id: courseId
+            id: courseId,
+            userId
         },
         include: {
+            chapters: {
+                orderBy: {
+                    position: "asc"
+                }
+            },
             attachments: {
                 orderBy: {
                     createdAt: "desc"
@@ -45,7 +52,8 @@ async function CourseIdPage({ params }: { params: { courseId: string } }) {
         course.description,
         course.imageUrl,
         course.price,
-        course.categoryId
+        course.categoryId,
+        course.chapters.some(chapter => chapter.isPublished)
     ];
 
     const totalFields = requiredFields.length;
@@ -103,9 +111,10 @@ async function CourseIdPage({ params }: { params: { courseId: string } }) {
                                 课程章节详情
                             </h2>
                         </div>
-                        <div>
-                            TODO: chapters
-                        </div>
+                        <ChapterForm 
+                            initialData={course}
+                            courseId={course.id}
+                        />
                     </div>
                     <div>
                         <div className="flex items-center gap-x-2">
